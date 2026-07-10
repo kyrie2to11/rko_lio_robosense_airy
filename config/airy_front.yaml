@@ -3,6 +3,7 @@
 # 话题拓扑：
 #   - PointCloud2: /pointcloud/airy_front  (frame_id = front_lidar_link)
 #   - Imu:         /imu/airy_front         (frame_id = front_lidar_link)
+#   - rslidar_sdk: config/rslidar_airy_front.yaml
 #
 # base_frame = front_lidar_link（雷达坐标系本身），因此：
 #   extrinsic_lidar2base = 单位阵（雷达即基准）

@@ -1,0 +1,37 @@
+# RoboSense Airy front LiDAR config for rslidar_sdk.
+#
+# This file is intentionally separate from config/airy_front.yaml:
+# - rslidar_airy_front.yaml starts the sensor driver.
+# - airy_front.yaml configures rko_lio itself.
+#
+# The SDK must publish the built-in IMU without its NED->FLU axis flip because
+# rko_lio applies the measured DIFOP IMU->LiDAR extrinsic in airy_front.yaml.
+
+common:
+  msg_source: 1
+  send_packet_ros: false
+  send_point_cloud_ros: true
+
+lidar:
+  - driver:
+      lidar_type: RSAIRY
+      msop_port: 6701
+      difop_port: 7790
+      imu_port: 6690
+      user_layer_bytes: 0
+      tail_layer_bytes: 0
+      min_distance: 0.2
+      max_distance: 200
+      use_lidar_clock: true
+      dense_points: false
+      ts_first_point: true
+      start_angle: 0
+      end_angle: 360
+    ros:
+      ros_node_name: airy_front
+      ros_frame_id: front_lidar_link
+      ros_recv_packet_topic: /rslidar_packets/airy_front
+      ros_send_packet_topic: /rslidar_packets/airy_front
+      ros_send_imu_data_topic: /imu/airy_front
+      ros_send_point_cloud_topic: /pointcloud/airy_front
+      ros_imu_ned_to_flu: false

@@ -42,6 +42,10 @@ def test_live_launch_script_uses_only_rko_lio_airy_front_config():
     text = SCRIPT.read_text()
     assert "config/rko_lio_airy_front.yaml" in text
     assert "config/rslidar_airy_front.yaml" in text
+    assert "RKO_LIO_RVIZ:-true" in text
+    assert "rviz:=${RVIZ}" in text
+    assert "rviz_config_file:=${RVIZ_CONFIG}" in text
+    assert "config/default.rviz" in text
     assert "rslidar_multi.yaml" not in text
     assert "iRail-Rookie_Articulated" not in text
     assert "rslidar_sdk_node" in text

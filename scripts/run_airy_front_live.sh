@@ -6,6 +6,8 @@ REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 RSLIDAR_CONFIG="${RKO_LIO_RSLIDAR_CONFIG:-${REPO_DIR}/config/rslidar_airy_front.yaml}"
 LIO_CONFIG="${RKO_LIO_CONFIG:-${REPO_DIR}/config/rko_lio_airy_front.yaml}"
+RVIZ="${RKO_LIO_RVIZ:-true}"
+RVIZ_CONFIG="${RKO_LIO_RVIZ_CONFIG:-config/default.rviz}"
 SDK_PID=""
 LIO_PID=""
 
@@ -65,13 +67,19 @@ source_setup "${RKO_SETUP}"
 
 echo "[run_airy_front_live] rslidar_sdk config: ${RSLIDAR_CONFIG}"
 echo "[run_airy_front_live] rko_lio config: ${LIO_CONFIG}"
+echo "[run_airy_front_live] rviz: ${RVIZ}"
+echo "[run_airy_front_live] rviz config: ${RVIZ_CONFIG}"
 
 ros2 run rslidar_sdk rslidar_sdk_node --ros-args -p "config_path:=${RSLIDAR_CONFIG}" &
 SDK_PID=$!
 
 sleep "${RSLIDAR_STARTUP_DELAY_SEC:-2}"
 
-ros2 launch rko_lio odometry.launch.py "config_file:=${LIO_CONFIG}" "$@" &
+ros2 launch rko_lio odometry.launch.py \
+  "config_file:=${LIO_CONFIG}" \
+  "rviz:=${RVIZ}" \
+  "rviz_config_file:=${RVIZ_CONFIG}" \
+  "$@" &
 LIO_PID=$!
 
 wait "${LIO_PID}"

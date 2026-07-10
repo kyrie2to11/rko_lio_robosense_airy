@@ -7,6 +7,8 @@ ROOT = Path(__file__).parents[2]
 LIO_CONFIG = ROOT / "config" / "rko_lio_airy_front.yaml"
 RSLIDAR_CONFIG = ROOT / "config" / "rslidar_airy_front.yaml"
 SCRIPT = ROOT / "scripts" / "run_airy_front_live.sh"
+SAVE_MAP_SCRIPT = ROOT / "scripts" / "save_airy_front_map.sh"
+SAVE_MAP_HELPER = ROOT / "scripts" / "save_pointcloud2_pcd.py"
 
 
 def test_airy_front_lio_config_does_not_embed_rslidar_sdk_config():
@@ -50,3 +52,15 @@ def test_live_launch_script_uses_only_rko_lio_airy_front_config():
     assert "iRail-Rookie_Articulated" not in text
     assert "rslidar_sdk_node" in text
     assert "odometry.launch.py" in text
+
+
+def test_save_airy_front_map_script_saves_local_map_topic():
+    text = SAVE_MAP_SCRIPT.read_text()
+    assert "/rko_lio/local_map" in text
+    assert "RKO_LIO_MAP_OUTPUT" in text
+    assert "save_pointcloud2_pcd.py" in text
+
+    helper = SAVE_MAP_HELPER.read_text()
+    assert "PointCloud2" in helper
+    assert "read_points" in helper
+    assert "DATA ascii" in helper

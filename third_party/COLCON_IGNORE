@@ -1,0 +1,7 @@
+# 此目录从 rko_lio 主包的 colcon 构建中排除（colcon 默认 base-path='.' 遇到此文件即跳过）。
+#
+# 单独构建 robosense 驱动：必须用 --base-paths src 绕过本文件，否则发现 0 个包：
+#   cd third_party
+#   colcon build --base-paths src --symlink-install \
+#       --cmake-args -DENABLE_IMU_DATA_PARSE=ON
+#   source install/setup.bash

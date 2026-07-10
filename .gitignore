@@ -6,4 +6,8 @@ compile_commands.json
 docker_zsh_history.txt
 **/__cmake_systeminformation/
 logs/
+install/
+log/
 .claude/
+
+.omc/

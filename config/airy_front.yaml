@@ -1,0 +1,44 @@
+# iRail 前 RoboSense Airy（内置 IMU）的 rko_lio 配置。
+#
+# 话题拓扑：
+#   - PointCloud2: /pointcloud/airy_front  (frame_id = front_lidar_link)
+#   - Imu:         /imu/airy_front         (frame_id = front_lidar_link)
+#
+# base_frame = front_lidar_link（雷达坐标系本身），因此：
+#   extrinsic_lidar2base = 单位阵（雷达即基准）
+#
+# ⚠️ IMU 外参取决于 rslidar_sdk 的构建版本。上游 SDK 把 Airy IMU 按芯片原始轴、
+# 单位 g 发布（decodeImuPkt 只乘量程、无旋转、无 ×9.8 —— 见 decoder_RSAIRY.hpp），
+# 那样单位阵就是错的。本仓库把 rslidar_sdk 固定到 kyrie2to11 fork（commit 1ad07a2），
+# 该 fork 把 Airy IMU 修正为 m/s² 且 FLU 轴向（NED→FLU，绕 X 转 180°），并置
+# orientation_covariance[0]=-1。用该 fork 时，发布出的 IMU 已是 FLU、与雷达本体共体，
+# 故 imu2base = 单位阵是预期值（壳体内 IMU 与雷达原点的 mm 级小量忽略）。
+# 上车后自检：静止时 /imu/airy_front 的 linear_acceleration 幅值应为 ~9.81 m/s²、+z 朝上。
+#
+# 启动（不要同时跑整车 robot_state_publisher，否则 front_lidar_link 会有两个 TF 父帧）：
+#   ros2 launch rko_lio odometry.launch.py \
+#       config_file:=config/airy_front.yaml \
+#       imu_topic:=/imu/airy_front \
+#       lidar_topic:=/pointcloud/airy_front \
+#       base_frame:=front_lidar_link
+#
+# 需要 rslidar_sdk 以 -DPOINT_TYPE=XYZIRT（带每点时间戳，供 deskew）+
+# -DENABLE_IMU_DATA_PARSE=ON（发出 /imu/airy_front）构建。用 third_party/build_robosense.sh。
+
+# base = 前雷达坐标系本身
+base_frame: front_lidar_link
+imu_topic: /imu/airy_front
+lidar_topic: /pointcloud/airy_front
+
+# 四元数顺序 (x, y, z, w)，随后平移 (x, y, z)，单位米。
+extrinsic_lidar2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]   # 雷达 = base
+extrinsic_imu2base_quat_xyzw_xyz:  [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]   # fork 已把 IMU 修成 FLU，见上方说明
+
+# 从静止起步，让 rko_lio 初始化 IMU bias / 朝向。
+initialization_phase: true
+
+# Airy 是固态、相对稀疏的雷达，保留全分辨率。
+double_downsample: false
+
+# deskew 依赖每点时间戳（POINT_TYPE=XYZIRT + ts_first_point: true）。
+deskew: true

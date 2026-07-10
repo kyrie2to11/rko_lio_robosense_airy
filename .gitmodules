@@ -1,0 +1,8 @@
+[submodule "third_party/src/rslidar_sdk"]
+	path = third_party/src/rslidar_sdk
+	url = https://github.com/kyrie2to11/rslidar_sdk.git
+	branch = main
+[submodule "third_party/src/rslidar_msg"]
+	path = third_party/src/rslidar_msg
+	url = https://github.com/RoboSense-LiDAR/rslidar_msg.git
+	branch = main

@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 RSLIDAR_CONFIG="${RKO_LIO_RSLIDAR_CONFIG:-${REPO_DIR}/config/rslidar_airy_front.yaml}"
-LIO_CONFIG="${RKO_LIO_CONFIG:-${REPO_DIR}/config/airy_front.yaml}"
+LIO_CONFIG="${RKO_LIO_CONFIG:-${REPO_DIR}/config/rko_lio_airy_front.yaml}"
 SDK_PID=""
 LIO_PID=""
 

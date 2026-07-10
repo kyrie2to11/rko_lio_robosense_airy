@@ -15,7 +15,7 @@
 #
 # 启动（不要同时跑整车 robot_state_publisher，否则 front_lidar_link 会有两个 TF 父帧）：
 #   ros2 launch rko_lio odometry.launch.py \
-#       config_file:=config/airy_front.yaml \
+#       config_file:=config/rko_lio_airy_front.yaml \
 #       imu_topic:=/imu/airy_front \
 #       lidar_topic:=/pointcloud/airy_front \
 #       base_frame:=front_lidar_link

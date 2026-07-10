@@ -1,11 +1,11 @@
 # RoboSense Airy front LiDAR config for rslidar_sdk.
 #
-# This file is intentionally separate from config/airy_front.yaml:
+# This file is intentionally separate from config/rko_lio_airy_front.yaml:
 # - rslidar_airy_front.yaml starts the sensor driver.
-# - airy_front.yaml configures rko_lio itself.
+# - rko_lio_airy_front.yaml configures rko_lio itself.
 #
 # The SDK must publish the built-in IMU without its NED->FLU axis flip because
-# rko_lio applies the measured DIFOP IMU->LiDAR extrinsic in airy_front.yaml.
+# rko_lio applies the measured DIFOP IMU->LiDAR extrinsic in rko_lio_airy_front.yaml.
 
 common:
   msg_source: 1

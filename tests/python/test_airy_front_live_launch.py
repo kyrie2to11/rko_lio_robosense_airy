@@ -4,7 +4,7 @@ import yaml
 
 
 ROOT = Path(__file__).parents[2]
-LIO_CONFIG = ROOT / "config" / "airy_front.yaml"
+LIO_CONFIG = ROOT / "config" / "rko_lio_airy_front.yaml"
 RSLIDAR_CONFIG = ROOT / "config" / "rslidar_airy_front.yaml"
 SCRIPT = ROOT / "scripts" / "run_airy_front_live.sh"
 
@@ -40,7 +40,7 @@ def test_rslidar_airy_front_config_contains_front_driver():
 
 def test_live_launch_script_uses_only_rko_lio_airy_front_config():
     text = SCRIPT.read_text()
-    assert "config/airy_front.yaml" in text
+    assert "config/rko_lio_airy_front.yaml" in text
     assert "config/rslidar_airy_front.yaml" in text
     assert "rslidar_multi.yaml" not in text
     assert "iRail-Rookie_Articulated" not in text

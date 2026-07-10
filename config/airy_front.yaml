@@ -7,13 +7,10 @@
 # base_frame = front_lidar_link（雷达坐标系本身），因此：
 #   extrinsic_lidar2base = 单位阵（雷达即基准）
 #
-# ⚠️ IMU 外参取决于 rslidar_sdk 的构建版本。上游 SDK 把 Airy IMU 按芯片原始轴、
-# 单位 g 发布（decodeImuPkt 只乘量程、无旋转、无 ×9.8 —— 见 decoder_RSAIRY.hpp），
-# 那样单位阵就是错的。本仓库把 rslidar_sdk 固定到 kyrie2to11 fork（commit 1ad07a2），
-# 该 fork 把 Airy IMU 修正为 m/s² 且 FLU 轴向（NED→FLU，绕 X 转 180°），并置
-# orientation_covariance[0]=-1。用该 fork 时，发布出的 IMU 已是 FLU、与雷达本体共体，
-# 故 imu2base = 单位阵是预期值（壳体内 IMU 与雷达原点的 mm 级小量忽略）。
-# 上车后自检：静止时 /imu/airy_front 的 linear_acceleration 幅值应为 ~9.81 m/s²、+z 朝上。
+# ⚠️ IMU 外参使用 front Airy DIFOP 实测值。rslidar_sdk 的 ROS 发布层必须设置
+# ros_imu_ned_to_flu: false，避免先把芯片 IMU 翻成 FLU 后再使用完整 DIFOP 外参。
+# 上游 decodeImuPkt 只做量程缩放，不会把 DIFOP 的 IMU->LiDAR 外参作用到 IMU 数据上。
+# 本配置的 imu2base 即 DIFOP 中的 R/t（base = front_lidar_link）。
 #
 # 启动（不要同时跑整车 robot_state_publisher，否则 front_lidar_link 会有两个 TF 父帧）：
 #   ros2 launch rko_lio odometry.launch.py \
@@ -32,7 +29,8 @@ lidar_topic: /pointcloud/airy_front
 
 # 四元数顺序 (x, y, z, w)，随后平移 (x, y, z)，单位米。
 extrinsic_lidar2base_quat_xyzw_xyz: [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]   # 雷达 = base
-extrinsic_imu2base_quat_xyzw_xyz:  [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]   # fork 已把 IMU 修成 FLU，见上方说明
+# front Airy DIFOP @ 192.168.1.203, 2026-07-11: q=[0.712471306,-0.701679111,0.00499025453,0.00248456723], t=[0.00425,0.00418,-0.00446] m.
+extrinsic_imu2base_quat_xyzw_xyz:  [0.712471302, -0.701679107, 0.0049902545, 0.0024845672, 0.0042500002, 0.0041800002, -0.0044600000]
 
 # 从静止起步，让 rko_lio 初始化 IMU bias / 朝向。
 initialization_phase: true

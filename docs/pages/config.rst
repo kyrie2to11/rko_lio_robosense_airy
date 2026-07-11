@@ -126,6 +126,12 @@ These show up under the top level of a Python config and as ROS launch arguments
 
   You can set it ``-1`` to disable this additional cost.
 
+- **max_scan_delta_seconds** (`float`, default ``1.0``)
+
+  Maximum allowed delta (in seconds) between a scan's time and the last successfully registered scan's time.
+  A scan exceeding this gap is dropped (and does not become the new reference), so a single large gap cascades until a scan falls back within the window.
+  Pick a value comfortably larger than your scan period; raise it if startup or networking hiccups cause transient gaps you would rather tolerate than latch on.
+
 Extrinsics
 ----------
 

@@ -50,7 +50,8 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(LIO::Config,
                                    initialization_phase,
                                    max_expected_jerk,
                                    double_downsample,
-                                   min_beta)
+                                   min_beta,
+                                   max_scan_delta_seconds)
 } // namespace rko_lio::core
 
 namespace rko_lio::ros {
@@ -127,6 +128,8 @@ BaseNode::BaseNode(const std::string& node_name, const rclcpp::NodeOptions& opti
   lio_config.max_expected_jerk = node->declare_parameter<double>("max_expected_jerk", lio_config.max_expected_jerk);
   lio_config.double_downsample = node->declare_parameter<bool>("double_downsample", lio_config.double_downsample);
   lio_config.min_beta = node->declare_parameter<double>("min_beta", lio_config.min_beta);
+  lio_config.max_scan_delta_seconds =
+      node->declare_parameter<double>("max_scan_delta_seconds", lio_config.max_scan_delta_seconds);
   lio = std::make_unique<core::LIO>(lio_config);
 
   // Lidar per-point timestamp processing params, namespaced under lidar_timestamps.*

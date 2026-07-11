@@ -76,6 +76,12 @@ public:
 
     /** Minimum weight for orientation regularization. */
     double min_beta = 200;
+
+    /** Maximum allowed delta (seconds) between consecutive LiDAR scan times.
+     *  A scan whose max timestamp is further than this from the last registered
+     *  scan is dropped (and does not become the new reference), so pick a value
+     *  comfortably larger than your scan period. */
+    double max_scan_delta_seconds = 1.0;
   };
 
   /** Configuration parameters. */

@@ -129,6 +129,8 @@ class LIOConfig:
         Double downsamples the incoming scan before registering. Disabling for sparse LiDARs may improve results.
     min_beta : float, default 200.0
         Minimum scaling on the orientation regularisation weight. Set to -1 to disable the cost.
+    max_scan_delta_seconds : float, default 1.0
+        Max allowed seconds between consecutive scan times; larger gaps to the last registered scan drop the frame.
     """
 
     deskew: bool = True
@@ -144,6 +146,7 @@ class LIOConfig:
     max_expected_jerk: float = 3.0
     double_downsample: bool = True
     min_beta: float = 200.0
+    max_scan_delta_seconds: float = 1.0
 
     def to_pybind(self) -> _LIOConfig:
         cfg = _LIOConfig()

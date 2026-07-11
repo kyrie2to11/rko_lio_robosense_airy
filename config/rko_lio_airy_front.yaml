@@ -36,8 +36,22 @@ extrinsic_imu2base_quat_xyzw_xyz:  [0.712471302, -0.701679107, 0.0049902545, 0.0
 # 从静止起步，让 rko_lio 初始化 IMU bias / 朝向。
 initialization_phase: true
 
-# Airy 是固态、相对稀疏的雷达，保留全分辨率。
-double_downsample: false
+# Airy 是 96 线（密集端，接近 Ouster-128 一侧）。按 docs/pages/config.rst，
+# double_downsample 对密集雷达应开 true：地图按 0.5*voxel 更新（更细），
+# 配准关键点按 1.5*voxel（更省 CPU）。两种模式的实际分辨率见 preprocess_scan.cpp。
+double_downsample: true
+
+# 体素分辨率（默认 1.0m：局部地图 + 配准关键点都会被抽稀到 ~1 点/m³，
+# 这是建图粗糙、点云稀疏的主因）。配 double_downsample=true 后：
+#   地图分辨率 = 0.5*voxel，ICP 关键点 = 1.5*voxel。
+# 实测 0.1（地图 0.05m）过重，启动时触发 lio.cpp 的 1s scan-delta 硬门限导致
+# 永久丢帧；回调到 0.2 → 地图 0.1m（仍比默认 1.0m 细 10×），ICP 0.3m 减负。
+voxel_size: 0.2
+
+# 相邻 scan 最大允许时间差（秒）。lio.cpp 原本硬编码 1s，超过即丢帧且会永久
+# 锁死（参考时间不更新）。Airy 启动/初始化阶段偶有 >1s 间隙会触发级联丢帧，
+# 放宽到 2.0s 留余量；稳态 scan 周期 ~0.1s，远小于此值。
+max_scan_delta_seconds: 2.0
 
 # deskew 依赖每点时间戳（POINT_TYPE=XYZIRT + ts_first_point: true）。
 deskew: true

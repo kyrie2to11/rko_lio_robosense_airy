@@ -424,7 +424,8 @@ Vector3dVector LIO::register_scan(const Vector3dVector& scan, const TimestampVec
     return bootstrap_first_scan(scan, current_lidar_time);
   }
 
-  if (std::chrono::abs(current_lidar_time - lidar_state.time) > std::chrono::seconds(1)) {
+  if (std::chrono::abs(current_lidar_time - lidar_state.time) >
+      std::chrono::duration<double>(config.max_scan_delta_seconds)) {
     const double diff_seconds = to_seconds(current_lidar_time - lidar_state.time);
     // TODO: std::expected with tl::expected (because ros humble)
     throw std::invalid_argument("Received LiDAR scan with " + std::to_string(diff_seconds) +

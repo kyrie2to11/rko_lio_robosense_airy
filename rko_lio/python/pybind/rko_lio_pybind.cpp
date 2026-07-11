@@ -71,7 +71,8 @@ PYBIND11_MODULE(rko_lio_pybind, m) {
       .def_readwrite("initialization_phase", &LIO::Config::initialization_phase)
       .def_readwrite("max_expected_jerk", &LIO::Config::max_expected_jerk)
       .def_readwrite("double_downsample", &LIO::Config::double_downsample)
-      .def_readwrite("min_beta", &LIO::Config::min_beta);
+      .def_readwrite("min_beta", &LIO::Config::min_beta)
+      .def_readwrite("max_scan_delta_seconds", &LIO::Config::max_scan_delta_seconds);
 
   py::class_<LIO>(m, "_LIO")
       .def(py::init<const LIO::Config&>(), "config"_a)
